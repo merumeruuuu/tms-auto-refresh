@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { width: 250px; padding: 15px; font-family: sans-serif; background: #f9f9f9; }
+  .header-container { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; justify-content: center; }
+  #icon { height: 20px; width: auto; }
+  h3 { margin: 0; font-size: 16px; color: #2b64b1; }
+  .disabled-section { opacity: 0.4; pointer-events: none; filter: grayscale(1); transition: 0.3s; }
+  .section-title { font-weight: bold; font-size: 12px; margin: 15px 0 8px 0; color: #666; text-transform: uppercase; }
+  .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .radio-option { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+  input[type="radio"], input[type="checkbox"] { accent-color: #26cf96; }
+  .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
+  .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+  input:checked + .slider { background-color: #26cf96; }
+  input:checked + .slider:before { transform: translateX(14px); }
+  .toggle-container { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+  .field-inline { display: flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 12px; }
+  input[type="number"] { width: 45px; padding: 3px; border: 1px solid #ccc; border-radius: 4px; }
+  .hidden { display: none !important; }
+  #countdown-box { text-align: center; margin-bottom: 15px; padding: 8px; background: #eef6ff; border-radius: 4px; border: 1px solid #d0e4ff; }
+  button { width: 100%; padding: 10px; margin-top: 8px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; }
+  #start { background: #26cf96; }
+  #stop { background: #666; }
+  #stopAll { background: #ff4d4d; margin-top: 15px; font-size: 11px; }
+</style>
+</head>
+<body>
+  <div class="header-container">
+    <img id="icon" src="timeless_medical_systems_inc__logo.JPG" alt="Logo">
+    <h3>TMS Refresher</h3>
+  </div>
+  <div id="countdown-box" class="hidden">
+    <span style="font-size: 11px; color: #666;">NEXT REFRESH</span>
+    <div id="countdown" style="font-size: 20px; font-weight: bold; color: #2b64b1;">--s</div>
+  </div>
+  <div id="fixedSection">
+    <div class="section-title">Fixed Interval</div>
+    <div class="grid-container">
+      <label class="radio-option"><input type="radio" name="interval" value="5"> 5s</label>
+      <label class="radio-option"><input type="radio" name="interval" value="10"> 10s</label>
+      <label class="radio-option"><input type="radio" name="interval" value="60"> 1m</label>
+      <label class="radio-option"><input type="radio" name="interval" value="300"> 5m</label>
+    </div>
+    <label class="radio-option" style="margin-top:5px;">
+      <input type="radio" name="interval" value="custom" checked>
+      <span>Custom: <input type="number" id="custom-secs" value="30">s</span>
+    </label>
+  </div>
+  <div class="toggle-container">
+    <span style="font-size:13px;">Random Mode</span>
+    <label class="switch"><input type="checkbox" id="enableFuzz"><span class="slider"></span></label>
+  </div>
+  <div id="fuzzContainer" class="hidden">
+    <div class="field-inline">
+      <span>Min:</span> <input type="number" id="fuzzMin" value="5">s
+      <span style="margin-left:10px;">Max:</span> <input type="number" id="fuzzMax" value="30">s
+    </div>
+  </div>
+  <button id="start">Start Refresher</button>
+  <button id="stop">Stop Current Tab</button>
+  <button id="stopAll">STOP ALL REFRESHERS</button>
+  <script src="popup.js"></script>
+</body>
+</html>
