@@ -1,33 +1,29 @@
-chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name.startsWith("refresh_")) {
-    const tabId = parseInt(alarm.name.split("_")[1]);
-    
-    // Always get fresh settings to ensure we use the current mode
-    const data = await chrome.storage.local.get(`settings_${tabId}`);
-    const settings = data[`settings_${tabId}`];
-
-    if (!settings || !settings.active) return;
-
-    // 1. Calculate the NEXT random delay IMMEDIATELY
-    let nextDelay = settings.useFuzz 
-      ? Math.floor(Math.random() * (settings.max - settings.min + 1) + settings.min) 
-      : settings.base;
-
-    const nextRunTime = Date.now() + (nextDelay * 1000);
-    
-    // 2. Schedule the next alarm right now (don't wait for reload to finish)
-    await chrome.storage.local.set({ [`timer_${tabId}`]: nextRunTime });
-    chrome.alarms.create(`refresh_${tabId}`, { delayInMinutes: nextDelay / 60 });
-
-    // 3. Update Badge and Trigger Reload
-    chrome.action.setBadgeText({ text: nextDelay + "s", tabId: tabId });
-    chrome.action.setBadgeBackgroundColor({ color: "#26cf96", tabId: tabId });
-
-    chrome.tabs.reload(tabId, { bypassCache: true });
+// Function to handle global cleanup
+async function clearAllRefreshers() {
+  const allData = await chrome.storage.local.get();
+  const keysToRemove = [];
+  
+  for (let key in allData) {
+    if (key.startsWith('settings_') || key.startsWith('timer_')) {
+      const tabId = parseInt(key.split('_')[1]);
+      // Remove badge from tab
+      chrome.action.setBadgeText({ text: "", tabId: tabId });
+      keysToRemove.push(key);
+    }
   }
-});
+  
+  await chrome.storage.local.remove(keysToRemove);
 
-chrome.tabs.onRemoved.addListener((tabId) => {
-  chrome.alarms.clear(`refresh_${tabId}`);
-  chrome.storage.local.remove([`settings_${tabId}`, `timer_${tabId}`]);
+  // Close the offscreen document if no other timers are running
+  const contexts = await chrome.runtime.getContexts({ contextTypes: ['OFFSCREEN_DOCUMENT'] });
+  if (contexts.length > 0) {
+    await chrome.offscreen.closeDocument();
+  }
+}
+
+// Add a listener for manual stop messages from popup
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.type === "STOP_ALL") {
+    clearAllRefreshers();
+  }
 });
