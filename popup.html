@@ -8,7 +8,7 @@
   h3 { margin: 0; font-size: 16px; color: #2b64b1; }
 
   .disabled-section { opacity: 0.4; pointer-events: none; filter: grayscale(1); transition: 0.3s; }
-  .section-title { font-weight: bold; font-size: 12px; margin: 15px 0 8px 0; color: #666; text-transform: uppercase; }
+  .section-title { font-weight: bold; font-size: 12px; margin: 15px 0 8px 0; color: #666;  }
   .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
   .radio-option { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
   input[type="radio"], input[type="checkbox"] { accent-color: #26cf96; }
@@ -75,9 +75,14 @@
     </div>
   </div>
 
-  <button id="start">Start Refresher</button>
-  <button id="stop">Stop Current Tab</button>
-  <button id="stopAll">STOP ALL REFRESHERS</button>
+<div class="section-title">Active Monitors</div>
+<div id="active-list" style="max-height: 100px; overflow-y: auto; font-size: 11px; background: #fff; border: 1px solid #eee; border-radius: 4px; padding: 5px; margin-bottom: 10px;">
+  <div style="color: #999; text-align: center;">No active refreshers</div>
+</div>
+
+<button id="start">Start Refresher</button>
+<button id="stop">Stop Current Tab</button>
+<button id="stopAll">STOP ALL REFRESHERS</button>
 
   <script src="popup.js"></script>
 </body>
